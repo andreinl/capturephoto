@@ -6,34 +6,32 @@ import android.content.ContentValues
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import butterknife.BindView
+
 import com.facebook.drawee.view.SimpleDraweeView
+
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
-import butterknife.ButterKnife
+
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+import kotlinx.android.synthetic.main.activity_main.*
 
-    @JvmField @BindView(R.id.main_container)
-    var mainContainer: ConstraintLayout? = null
-    @JvmField @BindView(R.id.imgv_photo)
-    var imgvPhoto: SimpleDraweeView? = null
-    @JvmField @BindView(R.id.fab_capture)
-    var fabCapturePhoto: FloatingActionButton? = null
+
+class MainActivity : AppCompatActivity() {
 
     private val TAKE_PHOTO_REQUEST = 101
     private var mCurrentPhotoPath: String = ""
@@ -41,8 +39,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
-        fabCapturePhoto?.setOnClickListener { validatePermissions() }
+
+        fab_capture.setOnClickListener { validatePermissions() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -81,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-                        Snackbar.make(mainContainer!!,
+                        Snackbar.make(main_container,
                                 R.string.storage_permission_denied_message,
                                 Snackbar.LENGTH_LONG)
                                 .show()
@@ -122,10 +120,10 @@ class MainActivity : AppCompatActivity() {
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setResizeOptions(ResizeOptions(width, height))
                 .build()
-        val controller = Fresco.newDraweeControllerBuilder()
-                .setOldController(imgvPhoto?.controller)
+
+        imgv_photo.controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(imgv_photo.controller)
                 .setImageRequest(request)
                 .build()
-        imgvPhoto?.controller = controller
     }
 }
